@@ -80,7 +80,7 @@
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
       //pass in a rowIndex, check if #1's > 1
-      var row = this.get(rowIndex);
+      var row = this.rows()[rowIndex];
       var found = false;
       for (var i = 0; i < row.length; i++) {
         if(row[i] === 1) {
@@ -96,7 +96,7 @@
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
-      var numRows = this.get(0).length;
+      var numRows = this.rows().length;
       for (var i = 0; i < numRows; i++) {
         if ( this.hasRowConflictAt(i) ) {
           return true;
@@ -112,10 +112,11 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
-      var numRows = this.get(0).length;
+      var rows = this.rows();
+      var numRows = rows.length;
       var found = false;
       for (var i = 0; i < numRows; i++) {
-        if (this.get(i)[colIndex] === 1) {
+        if (rows[i][colIndex] === 1) {
           if (found === true) {
             return true;
           } else {
@@ -128,7 +129,8 @@
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
-      var numCols = this.get(0).length;
+      var rows = this.rows();
+      var numCols = rows.length;
       for (var i = 0; i < numCols; i++) {
         if (this.hasColConflictAt(i) ) {
           return true;
@@ -143,12 +145,37 @@
     // --------------------------------------------------------------
     //
     // test if a specific major diagonal on this board contains a conflict
+    //
+    //
+
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      var start = toMajorDiagCoord(majorDiagonalColumnIndexAtFirstRow);
+      var row = start[0];
+      var col = start[1];
+      var rows = this.rows();
+      var found;
+      while (col < rows.length && row < rows.length) {
+        if (rows[row][col] === 1) {
+          if (found === true) {
+            return true;
+          } else {
+            found = true;
+          }
+        }
+        row++;
+        col++;
+      }
       return false; // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
+      var starts = makeRange( this.rows().length );
+      for (var i = 0; i < starts.length; i++) {
+        if (this.hasMajorDiagonalConflictAt(starts[i])) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -159,11 +186,37 @@
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+      var rows = this.rows();
+      var start = toMinorDiagCoord(minorDiagonalColumnIndexAtFirstRow, rows.length);
+      console.log(start);
+      var row = start[0];
+      var col = start[1];
+      var found;
+      while (true) {
+        if (rows[row][col] === 1) {
+          if (found === true) {
+            return true;
+          } else {
+            found = true;
+          }
+        }
+        row--;
+        col++;
+        if (row < 0 || col > rows.length) {
+          break;
+        }
+      }
       return false; // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
+      var starts = makeRange( this.rows().length );
+      for (var i = 0; i < starts.length; i++) {
+        if (this.hasMinorDiagonalConflictAt(starts[i])) {
+          return true;
+        }
+      }
       return false; // fixme
     }
 
@@ -181,5 +234,31 @@
   };
 
   window.makeEmptyMatrix = makeEmptyMatrix;
+
+  window.toMajorDiagCoord = function(num) {
+    if (num === 0){
+      return [0,0];
+    } else if (num > 0){
+      return [0,num];
+    } else if (num < 0) {
+      return [-1 * num,0];
+    }
+  };
+
+  window.toMinorDiagCoord = function(num, size) {
+    var len = size - 1;
+    if (num === 0) {
+      return [len, 0];
+    } else if (num > 0) {
+      return [len - num, 0];
+    } else if (num < 0) {
+      return [len, num * -1];
+    }
+
+  };
+
+  window.makeRange = function(range){
+    return _.range(-1 * (range - 2), (range-2));
+  };
 
 }());
