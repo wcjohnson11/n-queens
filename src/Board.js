@@ -79,11 +79,29 @@
     //
     // test if a specific row on this board contains a conflict
     hasRowConflictAt: function(rowIndex) {
+      //pass in a rowIndex, check if #1's > 1
+      var row = this.get(rowIndex);
+      var found = false;
+      for (var i = 0; i < row.length; i++) {
+        if(row[i] === 1) {
+          if (found === true) {
+            return true;
+          } else {
+            found = true;
+          }
+        }
+      }
       return false; // fixme
     },
 
     // test if any rows on this board contain conflicts
     hasAnyRowConflicts: function() {
+      var numRows = this.get(0).length;
+      for (var i = 0; i < numRows; i++) {
+        if ( this.hasRowConflictAt(i) ) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -94,11 +112,28 @@
     //
     // test if a specific column on this board contains a conflict
     hasColConflictAt: function(colIndex) {
+      var numRows = this.get(0).length;
+      var found = false;
+      for (var i = 0; i < numRows; i++) {
+        if (this.get(i)[colIndex] === 1) {
+          if (found === true) {
+            return true;
+          } else {
+            found = true;
+          }
+        }
+      }
       return false; // fixme
     },
 
     // test if any columns on this board contain conflicts
     hasAnyColConflicts: function() {
+      var numCols = this.get(0).length;
+      for (var i = 0; i < numCols; i++) {
+        if (this.hasColConflictAt(i) ) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -144,5 +179,7 @@
       });
     });
   };
+
+  window.makeEmptyMatrix = makeEmptyMatrix;
 
 }());
