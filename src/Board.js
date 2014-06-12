@@ -188,11 +188,10 @@
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
       var rows = this.rows();
       var start = toMinorDiagCoord(minorDiagonalColumnIndexAtFirstRow, rows.length);
-      console.log(start);
       var row = start[0];
       var col = start[1];
       var found;
-      while (true) {
+      while (row >= 0 && col < rows.length) {
         if (rows[row][col] === 1) {
           if (found === true) {
             return true;
@@ -202,9 +201,6 @@
         }
         row--;
         col++;
-        if (row < 0 || col > rows.length) {
-          break;
-        }
       }
       return false; // fixme
     },
@@ -237,28 +233,25 @@
 
   window.toMajorDiagCoord = function(num) {
     if (num === 0){
-      return [0,0];
+      return [0, 0];
     } else if (num > 0){
-      return [0,num];
+      return [0, num];
     } else if (num < 0) {
-      return [-1 * num,0];
+      return [Math.abs(num), 0];
     }
   };
 
   window.toMinorDiagCoord = function(num, size) {
     var len = size - 1;
-    if (num === 0) {
-      return [len, 0];
-    } else if (num > 0) {
-      return [len - num, 0];
-    } else if (num < 0) {
-      return [len, num * -1];
+    if (num <= len){
+      return [num, 0];
+    } else {
+      return [len, num - len];
     }
-
   };
 
-  window.makeRange = function(range){
-    return _.range(-1 * (range - 2), (range-2));
+  window.makeRange = function(r){
+    return _.range(-1 * (r - 1), (r - 1));
   };
 
 }());
