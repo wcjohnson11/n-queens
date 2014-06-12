@@ -170,7 +170,7 @@
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-      var starts = makeRange( this.rows().length );
+      var starts = makeMajorRange( this.rows().length );
       for (var i = 0; i < starts.length; i++) {
         if (this.hasMajorDiagonalConflictAt(starts[i])) {
           return true;
@@ -207,7 +207,7 @@
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      var starts = makeRange( this.rows().length );
+      var starts = makeMinorRange( this.rows().length );
       for (var i = 0; i < starts.length; i++) {
         if (this.hasMinorDiagonalConflictAt(starts[i])) {
           return true;
@@ -250,8 +250,12 @@
     }
   };
 
-  window.makeRange = function(r){
+  window.makeMajorRange = function(r){
     return _.range(-1 * (r - 1), (r - 1));
+  };
+
+  window.makeMinorRange = function(r){
+    return _.range(0, 2 * r - 1);
   };
 
 }());

@@ -6,7 +6,7 @@ var factorial  = function(num){
   return rval;
 };
 
-var countSolutions = function(n, solutions){
+var countRooksSolutions = function(n, solutions){
 
   var range = _.range(n);
 
@@ -30,7 +30,7 @@ var countSolutions = function(n, solutions){
 
   // return updatedSolutions;
 
-  return countSolutions(n, updatedSolutions);
+  return countRooksSolutions(n, updatedSolutions);
 
 };
 
@@ -45,12 +45,22 @@ var makeEmptyMatrix = function(n) {
 var makeBoardFromArr = function(arr){
   var board = makeEmptyMatrix(arr.length);
   for (var i = 0; i < arr.length; i++){
-    board[i][arr[i]] = 0;
+    board[i][arr[i]] = 1;
   }
   return new Board(board);
 };
 
-var solutions4 = countSolutions(4);
+var countQueensSolutions = function(n){
+
+  return countRooksSolutions(n)
+    .map(makeBoardFromArr)
+    .filter(function(board){
+      return !board.hasAnyQueensConflicts();
+    })
+    .length;
+};
+
+var solutions4 = countRooksSolutions(4);
 var bbBoards = solutions4.map(makeBoardFromArr);
 var allPassed = bbBoards.every(function(board){
   return !board.hasAnyRooksConflicts();
